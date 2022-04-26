@@ -1,69 +1,47 @@
 ---
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: sumologic
+---
+apiVersion: v1
 data:
   config.yaml: |2
 
     receivers:
-      k8s_events:
+      raw_k8s_events:
     extensions:
       health_check: {}
-      ## Configuration for File Storage extension
-      ## ref: https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/release/v0.37.x/extension/storage/filestorage
       file_storage:
         directory: /var/lib/storage/otc
         timeout: 10s
       pprof: {}
     exporters:
+      logging:
       sumologic:
         log_format: json
-        # json_logs:
-        #   add_timestamp: true
-        #   timestamp_key: timestamp
+        json_logs:
+          add_timestamp: true
+          timestamp_key: timestamp
         endpoint: ${SUMO_ENDPOINT_DEFAULT_EVENT_SOURCE}
         source_name: "%{_sourceName}"
         source_category: "%{_sourceCategory}"
-        ## Configuration for sending queue
-        ## ref: https://github.com/open-telemetry/opentelemetry-collector/tree/release/v0.37.x/exporter/exporterhelper#configuration
         sending_queue:
           enabled: true
-          # persistent_storage_enabled: true
-        metadata_attributes:
-          ## Attributes to be send as fields
-          - _collector
 
     processors:
-      ## Common processors
-      ## The memory_limiter processor is used to prevent out of memory situations on the collector.
       memory_limiter:
-        ## check_interval is the time between measurements of memory usage for the
-        ## purposes of avoiding going over the limits. Defaults to zero, so no
-        ## checks will be performed. Values below 1 second are not recommended since
-        ## it can result in unnecessary CPU consumption.
-        check_interval: 5s
-
-        ## Maximum amount of memory, in MiB, targeted to be allocated by the process heap.
-        ## Note that typically the total memory usage of process will be about 50MiB higher
-        ## than this value.
-        limit_mib: 1900
-      ## The batch processor accepts spans and places them into batches grouped by node and resource
+        check_interval: 1s
+        limit_percentage: 80
+        spike_limit_percentage: 10
       batch:
-        ## Number of spans after which a batch will be sent regardless of time
-        send_batch_size: 256
-        ## Time duration after which a batch will be sent regardless of size
-        timeout: 5s
-
-      # attributes:
-      #   actions: []
-      groupbyattrs:
-        keys:
-          - k8s.namespace.name
-      # source:
-      #   collector: '{{ .Values.sumologic.collectorName | default .Values.sumologic.clusterName | quote }}'
-      #   source_host: "%{k8s.pod.hostname}"
-      #   source_name: "%{k8s.namespace.name}.%{k8s.pod.name}.%{k8s.container.name}"
-      #   source_category: "%{k8s.namespace.name}/%{k8s.pod.pod_name}"
-      #   source_category_prefix: '{{ .Values.fluentd.logs.containers.sourceCategoryPrefix | quote }}'
-      #   source_category_replace_dash: '{{ .Values.fluentd.logs.containers.sourceCategoryReplaceDash | quote }}'
+        send_batch_size: 1024
+        send_batch_max_size: 2_048
+        timeout: 1s
+      source:
+        collector: 'kubernetes'
+        source_name: "events"
+        source_category: "kubernetes/events"
 
     service:
       telemetry:
@@ -76,12 +54,10 @@ data:
       pipelines:
         logs/events:
           receivers:
-            - k8s_events
+            - raw_k8s_events
           processors:
             - memory_limiter
-            # - attributes
-            - groupbyattrs
-            # - source
+            - source
             - batch
           exporters:
             - sumologic
@@ -125,8 +101,8 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.namespace
-        image: otel/opentelemetry-collector-contrib:0.48.0
-        imagePullPolicy: IfNotPresent
+        image: localhost:32000/sumologic-otel-collector-local:latest
+        imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3
           httpGet:

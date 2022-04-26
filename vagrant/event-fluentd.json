@@ -1,22 +1,25 @@
 {
-    "timestamp": 1649172081365,
-    "type": "ADDED",
     "object": {
-        "kind": "Event",
         "apiVersion": "v1",
-        "metadata": {
-            "name": "receiver-mock.16e3094532d8d067",
+        "count": 1,
+        "eventTime": null,
+        "firstTimestamp": "2022-04-05T15:21:21Z",
+        "involvedObject": {
+            "apiVersion": "apps/v1",
+            "kind": "Deployment",
+            "name": "receiver-mock",
             "namespace": "receiver-mock",
-            "selfLink": "/api/v1/namespaces/receiver-mock/events/receiver-mock.16e3094532d8d067",
-            "uid": "8d319460-9bbc-468e-8e0f-95915af4c640",
-            "resourceVersion": "84936",
+            "resourceVersion": "84934",
+            "uid": "67fff84d-d06a-43e7-88c2-91dfe8f87270"
+        },
+        "kind": "Event",
+        "lastTimestamp": "2022-04-05T15:21:21Z",
+        "message": "Scaled up replica set receiver-mock-84c7d59478 to 1",
+        "metadata": {
             "creationTimestamp": "2022-04-05T15:21:21Z",
             "managedFields": [
                 {
-                    "manager": "kubelite",
-                    "operation": "Update",
                     "apiVersion": "v1",
-                    "time": "2022-04-05T15:21:21Z",
                     "fieldsType": "FieldsV1",
                     "fieldsV1": {
                         "f:count": {},
@@ -36,29 +39,26 @@
                             "f:component": {}
                         },
                         "f:type": {}
-                    }
+                    },
+                    "manager": "kubelite",
+                    "operation": "Update",
+                    "time": "2022-04-05T15:21:21Z"
                 }
-            ]
-        },
-        "involvedObject": {
-            "kind": "Deployment",
+            ],
+            "name": "receiver-mock.16e3094532d8d067",
             "namespace": "receiver-mock",
-            "name": "receiver-mock",
-            "uid": "67fff84d-d06a-43e7-88c2-91dfe8f87270",
-            "apiVersion": "apps/v1",
-            "resourceVersion": "84934"
+            "resourceVersion": "84936",
+            "selfLink": "/api/v1/namespaces/receiver-mock/events/receiver-mock.16e3094532d8d067",
+            "uid": "8d319460-9bbc-468e-8e0f-95915af4c640"
         },
         "reason": "ScalingReplicaSet",
-        "message": "Scaled up replica set receiver-mock-84c7d59478 to 1",
+        "reportingComponent": "",
+        "reportingInstance": "",
         "source": {
             "component": "deployment-controller"
         },
-        "firstTimestamp": "2022-04-05T15:21:21Z",
-        "lastTimestamp": "2022-04-05T15:21:21Z",
-        "count": 1,
-        "type": "Normal",
-        "eventTime": null,
-        "reportingComponent": "",
-        "reportingInstance": ""
-    }
+        "type": "Normal"
+    },
+    "timestamp": 1649172081365,
+    "type": "ADDED"
 }

@@ -1,0 +1,54 @@
+receivers:
+  raw_k8s_events:
+extensions:
+  health_check: {}
+  file_storage:
+    directory: /var/lib/storage/otc
+    timeout: 10s
+  pprof: {}
+exporters:
+  logging:
+  sumologic:
+    log_format: json
+    json_logs:
+      add_timestamp: true
+      timestamp_key: timestamp
+    endpoint: ${SUMO_ENDPOINT_DEFAULT_EVENT_SOURCE}
+    source_name: "%{_sourceName}"
+    source_category: "%{_sourceCategory}"
+    sending_queue:
+      enabled: true
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_percentage: 80
+    spike_limit_percentage: 10
+  batch:
+    send_batch_size: 1024
+    send_batch_max_size: 2_048
+    timeout: 1s
+  source:
+    collector: '{{ .Values.sumologic.collectorName | default .Values.sumologic.clusterName | quote }}'
+    source_name: "{{ .Values.fluentd.events.sourceName }}"
+    source_category: -|
+      {{ .Values.fluentd.events.source_category | default (printf "%s/%s"  (include "sumologic.clusterNameReplaceSpaceWithDash" .) (.Values.fluentd.events.sourceName ))}}
+
+service:
+  telemetry:
+    logs:
+      level: info
+  extensions:
+    - health_check
+    - file_storage
+    - pprof
+  pipelines:
+    logs/events:
+      receivers:
+        - raw_k8s_events
+      processors:
+        - memory_limiter
+        - source
+        - batch
+      exporters:
+        - sumologic

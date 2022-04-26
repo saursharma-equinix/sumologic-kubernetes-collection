@@ -1,0 +1,40 @@
+{
+    "log": "Scaled up replica set receiver-mock-84c7d59478 to 1",
+    "object": {
+        "apiVersion": "v1",
+        "count": 1,
+        "eventTime": null,
+        "firstTimestamp": "2022-04-21T12:02:21Z",
+        "involvedObject": {
+            "apiVersion": "apps/v1",
+            "kind": "Deployment",
+            "name": "receiver-mock",
+            "namespace": "receiver-mock",
+            "resourceVersion": "153669",
+            "uid": "92bf404e-f024-452c-81a5-bc1e8bf44133"
+        },
+        "kind": "Event",
+        "lastTimestamp": "2022-04-21T12:02:21Z",
+        "message": "Scaled up replica set receiver-mock-84c7d59478 to 1",
+        "metadata": {
+            "creationTimestamp": "2022-04-21T12:02:21Z",
+            "managedFields": [
+                "<Invalid array value>"
+            ],
+            "name": "receiver-mock.16e7e7b2623b37d6",
+            "namespace": "receiver-mock",
+            "resourceVersion": "153671",
+            "selfLink": "/api/v1/namespaces/receiver-mock/events/receiver-mock.16e7e7b2623b37d6",
+            "uid": "75c0bf46-5e54-4b0f-a06f-7117baf0004a"
+        },
+        "reason": "ScalingReplicaSet",
+        "reportingComponent": "",
+        "reportingInstance": "",
+        "source": {
+            "component": "deployment-controller"
+        },
+        "type": "Normal"
+    },
+    "timestamp": 1650542541000,
+    "type": "ADDED"
+}

@@ -179,7 +179,7 @@ fluentd:
         enabled: false
 
 otellogs:
-  enabled: true
+  enabled: false
   config:
     receivers:
       filelog/containers:
