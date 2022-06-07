@@ -77,6 +77,9 @@ spec:
           readOnly: true
         - mountPath: {{ .Values.otellogs.config.extensions.file_storage.directory }}
           name: file-storage
+        - mountPath: /var/log/journal
+          name: varlogjournal
+          readOnly: true
         env:
         - name: LOGS_METADATA_SVC
           valueFrom:
@@ -131,5 +134,9 @@ spec:
           path: /var/lib/otc
           type: DirectoryOrCreate
         name: file-storage
+      - hostPath:
+          path: /var/log/journal/
+          type: ""
+        name: varlogjournal
       serviceAccountName: {{ template "sumologic.metadata.name.logs.collector.serviceaccount" . }}
 {{- end }}
