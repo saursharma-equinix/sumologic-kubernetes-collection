@@ -3653,7 +3653,7 @@ metadata:
 
   ## Configure persistence for Opentelemetry Collector
   persistence:
-    enabled: true
+    enabled: false
     # storageClass: "-"
     accessMode: ReadWriteOnce
     size: 10Gi
